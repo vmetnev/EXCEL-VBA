@@ -1,0 +1,44 @@
+Sub Макрос1()
+
+'Reading active book parameters
+Dim NUMM As Integer
+NUMM = Sheets.Count
+Dim SheetList() As String
+ReDim SheetList(NUMM)
+Dim Index As Integer
+For Index = 1 To NUMM
+    SheetList(Index - 1) = Sheets(Index).Name
+Next Index
+Dim OUTPUTNAME As String
+Dim Start As String
+Start = ActiveWorkbook.Name
+OUTPUTNAME = "TEXT" + ActiveWorkbook.Name
+
+'Creating new workbook
+Set wb = Workbooks.Add
+wb.Windows(1).Caption = OUTPUTNAME
+
+'Creating simular sheets in new book
+For Index = 1 To NUMM
+    Worksheets.Add.Name = SheetList(Index - 1)
+Next Index
+
+'Copy and Paste
+For Index = 1 To NUMM
+    Windows(Start).Activate
+    Sheets(SheetList(Index - 1)).Select
+    Cells.Select
+    Selection.Copy
+    Application.WindowState = xlNormal
+    Windows(OUTPUTNAME).Activate
+    Sheets(SheetList(Index - 1)).Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+Next Index
+           
+    Windows(Start).Activate
+    Application.CutCopyMode = False
+
+End Sub
